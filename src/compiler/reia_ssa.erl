@@ -133,6 +133,10 @@ transform(#state{mode=Mode} = State, {erl_funcall, Line, Module, Function, Argum
   Node = {erl_funcall, Line, Module, Function, Arguments2},
   {stop, #state{mode=Mode, bindings=Dict2}, Node};
   
+% Underscore identifiers don't do anything
+transform(State, {identifier, _Line, '_'} = Node) ->
+  {stop, State, Node};
+  
 % Arguments should initialize new entries in the SSA dict
 transform(#state{mode=argument, bindings=Dict}, {identifier, Line, Name}) ->
   case dict:find(Name, Dict) of
