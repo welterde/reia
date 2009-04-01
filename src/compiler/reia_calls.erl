@@ -35,19 +35,20 @@ transform(_, Node) ->
 
 % Generate case node for dispatching function calls
 case_node(Line, Receiver, Name, Arguments, Block) ->
+  Call = {funcall, Line, Receiver, Name, Arguments, Block},
   {'case', Line, Receiver, [
-    %object_call_clause(Line, Node), 
-    builtin_call_clause(Line, {funcall, Line, Receiver, Name, Arguments, Block})
+    object_call_clause(Line, Call), 
+    builtin_call_clause(Line, Call)
   ]}.
   
 % Clause which matches calls to objects and dispatches them
-%object_call_clause(Line, Node) ->
-%  {clause, Line, 
-%    {erl_forms, Line,
-%      {tuple, Line, [{atom, Line, object}, {tuple, Line, [{var, Line, '_'}, {var, Line ,'_'}]}]}
-%    },
-%    [Node]
-%  }.
+object_call_clause(Line, Node) ->
+  {clause, Line, 
+    {erl_forms, Line,
+      {tuple, Line, [{atom, Line, object}, {tuple, Line, [{var, Line, '_'}, {var, Line ,'_'}]}]}
+    },
+    [Node]
+  }.
   
 % Clause which matches calls to builtins and dispatches them
 builtin_call_clause(Line, Node) ->
