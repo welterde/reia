@@ -52,4 +52,8 @@ object_call_clause(Line, Node) ->
   
 % Clause which matches calls to builtins and dispatches them
 builtin_call_clause(Line, Node) ->
-  {clause, Line, {identifier, Line, '_'}, [Node]}.
+  Nonce = {identifier, Line, list_to_atom("__return_value_" ++ reia_compiler:nonce())},
+  {clause, Line, {identifier, Line, '_'}, [
+    {match, Line, Nonce, Node},
+    Nonce
+  ]}.
