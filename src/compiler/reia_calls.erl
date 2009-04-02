@@ -37,7 +37,8 @@ transform(_, Node) ->
 case_node(Line, Receiver, Name, Arguments, Block) ->
   Call = {funcall, Line, Receiver, Name, Arguments, Block},
   {'case', Line, Receiver, [
-    object_call_clause(Line, Call), 
+    object_call_clause(Line, Call),
+    constant_call_clause(Line, Call),
     builtin_call_clause(Line, Call)
   ]}.
   
@@ -46,6 +47,15 @@ object_call_clause(Line, Node) ->
   {clause, Line, 
     {erl_forms, Line,
       {tuple, Line, [{atom, Line, object}, {tuple, Line, [{var, Line, '_'}, {var, Line ,'_'}]}]}
+    },
+    [Node]
+  }.
+  
+% Clause which matches calls to constants and dispatches them
+constant_call_clause(Line, Node) ->
+  {clause, Line,
+    {erl_forms, Line,
+      {tuple, Line, [{atom, Line, constant}, {var, Line, '_'}]}
     },
     [Node]
   }.
