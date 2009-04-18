@@ -39,6 +39,7 @@ case_node(Line, Receiver, Name, Arguments, Block) ->
   {'case', Line, Receiver, [
     object_call_clause(Line, Call),
     constant_call_clause(Line, Call),
+%    rebinding_call_clause(Line, {erl_forms, Line, {tuple, Line, [{atom, Line, dict}, {var, Line, '_'}]}}, Call),
     builtin_call_clause(Line, Call)
   ]}.
   
@@ -59,6 +60,14 @@ constant_call_clause(Line, Node) ->
     },
     [Node]
   }.
+  
+% Dispatch to the given identifier, rebinding the receiver
+%rebinding_call_clause(Line, Pattern, Node) ->
+%  Ret = {identifier, Line, list_to_atom("__return_value_" ++ reia_compiler:nonce())},
+%  {clause, Line, Pattern, [
+%    {match, Line, {tuple, Line, [Ret, {identifier, Line, '_'}]}, Node},
+%    Ret
+%  ]}.
   
 % Clause which matches calls to builtins and dispatches them
 builtin_call_clause(Line, Node) ->
